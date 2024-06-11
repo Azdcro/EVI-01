@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    build: .
+    environment:
+      POSTGRES_DB: dbevi01
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backup:/docker-entrypoint-initdb.d
+    command: >
+      bash -c "
+      pg_ctl start -w && 
+      pg_restore -U postgres -d dbevi01 /docker-entrypoint-initdb.d/dbevi01.backup &&
+      pg_ctl stop -w
+      "
